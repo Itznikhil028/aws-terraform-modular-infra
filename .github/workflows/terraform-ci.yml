@@ -1,0 +1,51 @@
+name: "Terraform CI"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  terraform-ci:
+    name: "Validate & Spec Check"
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.0"
+
+      - name: Check Formatting
+        id: fmt
+        run: terraform fmt -check -diff
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Initialize Backend
+        id: init
+        run: terraform init
+
+      - name: Validate Syntax
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Select Dev Workspace
+        run: terraform workspace select -or-create dev
+
+      - name: Run Speculative Plan
+        id: plan
+        run: terraform plan -no-color
