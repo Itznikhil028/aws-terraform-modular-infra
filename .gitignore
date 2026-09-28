@@ -1,0 +1,25 @@
+# Terraform local execution & cache
+.terraform/
+.terraform.lock.hcl
+
+# State files & backups (Contains sensitive metadata / IPs)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+errored.tfstate
+
+# Crash logs
+crash.log
+crash.*.log
+
+# CLI configuration and credentials
+.terraformrc
+terraform.rc
+
+# Variable definitions with sensitive values
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
