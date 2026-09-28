@@ -1,29 +1,32 @@
 variable "aws_region" {
-  description = "AWS Region for deployment"
+  description = "AWS region for infrastructure provisioning"
   type        = string
   default     = "ap-south-1"
 }
 
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
-  type        = string
-  default     = "10.0.0.0/16"
+variable "instance_type_per_env" {
+  description = "EC2 instance sizing per environment workspace"
+  type        = map(string)
+  default = {
+    dev  = "t3.micro"
+    prod = "t3.small"
+  }
 }
 
-variable "public_subnet_cidr" {
-  description = "CIDR block for the public subnet"
-  type        = string
-  default     = "10.0.1.0/24"
+variable "vpc_cidr_per_env" {
+  description = "VPC CIDR allocations per workspace"
+  type        = map(string)
+  default = {
+    dev  = "10.0.0.0/16"
+    prod = "10.1.0.0/16"
+  }
 }
 
-variable "instance_type" {
-  description = "EC2 instance type"
-  type        = string
-  default     = "t3.micro"
-}
-
-variable "project_name" {
-  description = "Name prefix for project resources"
-  type        = string
-  default     = "dev"
+variable "subnet_cidr_per_env" {
+  description = "Public subnet allocations per workspace"
+  type        = map(string)
+  default = {
+    dev  = "10.0.1.0/24"
+    prod = "10.1.1.0/24"
+  }
 }

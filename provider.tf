@@ -14,7 +14,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Environment = var.project_name
+      Environment = terraform.workspace
       ManagedBy   = "Terraform"
       Project     = "CloudInfrastructure"
     }

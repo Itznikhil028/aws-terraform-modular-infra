@@ -1,15 +1,21 @@
+locals {
+  env = terraform.workspace
+}
+
 module "vpc" {
-  source             = "./modules/vpc"
-  vpc_cidr           = var.vpc_cidr
-  public_subnet_cidr = var.public_subnet_cidr
+  source = "./modules/vpc"
+
   aws_region         = var.aws_region
-  project_name       = var.project_name
+  vpc_cidr           = lookup(var.vpc_cidr_per_env, local.env, "10.0.0.0/16")
+  public_subnet_cidr = lookup(var.subnet_cidr_per_env, local.env, "10.0.1.0/24")
+  project_name       = local.env
 }
 
 module "ec2" {
-  source        = "./modules/ec2"
+  source = "./modules/ec2"
+
   vpc_id        = module.vpc.vpc_id
   subnet_id     = module.vpc.public_subnet_id
-  instance_type = var.instance_type
-  project_name  = var.project_name
+  instance_type = lookup(var.instance_type_per_env, local.env, "t3.micro")
+  project_name  = local.env
 }
